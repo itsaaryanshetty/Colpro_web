@@ -9,9 +9,11 @@ class ChatService {
   constructor() {
     this.ws = null;
     this.listeners = [];
+    this.currentProjectId = null;
+    this.intentionalDisconnect = false;
   }
 
-  connect() {
+  connect(projectId = null) {
     const token = authService.getToken();
     
     if (!token) {
@@ -19,12 +21,17 @@ class ChatService {
       return;
     }
 
+    if (this.ws && this.ws.readyState === WebSocket.OPEN) return;
+    
+    this.intentionalDisconnect = false;
+    this.currentProjectId = projectId;
+
     // create a websocket connection with the token for authentication9
-    this.ws = new WebSocket(`${WS_BASE_URL}/chat/ws/${token}`);
+    this.ws = new WebSocket(`${WS_BASE_URL}/chat/ws/${token}/${projectId}`);
 
     // when connection opens
     this.ws.onopen = () => {
-      console.log('WebSocket connected');
+      console.log('WebSocket connected to project:', projectId);
     };
 
     // when a message is received
@@ -41,12 +48,17 @@ class ChatService {
     this.ws.onclose = () => {
       console.log('WebSocket disconnected');
       // Attempt to reconnect after 3 seconds
-      setTimeout(() => this.connect(), 3000);
+      if (!this.intentionalDisconnect) {
+        console.log('Reconnecting WebSocket...');
+        setTimeout(() => this.connect(this.currentProjectId), 3000);
+      }
     };
   }
 
   disconnect() {
+    
     if (this.ws) {
+      this.intentionalDisconnect = true;
       this.ws.close();
       this.ws = null;
     }
@@ -55,12 +67,9 @@ class ChatService {
 
   // usage -> chatService.sendMessage("Hello team!", 5);  // Send to project 5
   // chatService.sendMessage("Hi everyone!");    // Send to general chat
-  sendMessage(content, projectId = null) {
+  sendMessage(content) {
     if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-      this.ws.send(JSON.stringify({
-        content,
-        project_id: projectId
-      }));
+      this.ws.send(JSON.stringify({content}));
     } else {
       console.error('WebSocket is not connected');
     }
@@ -77,11 +86,9 @@ class ChatService {
     this.listeners.forEach(callback => callback(data));
   }
 
-  async getMessageHistory(projectId = null, limit = 50) {
+  async getMessageHistory(projectId, limit = 50) {
     const token = authService.getToken();
-    const url = projectId 
-      ? `${API_BASE_URL}/chat/messages?project_id=${projectId}&limit=${limit}`
-      : `${API_BASE_URL}/chat/messages?limit=${limit}`;
+    const url = `${API_BASE_URL}/chat/messages/${projectId}?limit=${limit}`;
 
     try {
       const response = await fetch(url, {
@@ -100,6 +107,28 @@ class ChatService {
       return [];
     }
   }
+
+  async getMyProjects() {
+    const token = authService.getToken();
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/chat/my-projects`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch projects');
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching projects:', error);
+      return [];
+    }
+  }
+
 }
 
 export const chatService = new ChatService();
