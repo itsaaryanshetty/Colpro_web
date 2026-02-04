@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+python-dotenv
+sqlalchemy
+psycopg2-binary
+pydantic
+passlib[bcrypt]
+python-jose[cryptography] #used for auth -> creates and verifies access tokens -> the token proves that u are logged in/authorized/etc
+bcrypt==4.1.2
+pyjwt
+passlib==1.7.4
+email-validator
+bcrypt #used for hashing passwords
