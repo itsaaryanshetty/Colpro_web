@@ -6,8 +6,9 @@ const Sidebar = () => {
     { path: "/member-dashboard", label: "Dashboard" },
     { path: "/member-tasks", label: "TaskDetails" },
     { path: "/team", label: "Team" },
-    { path: "/admin-dashboard", label: "Create-Project"},
-    { path: "/chat", label: "Chat"}
+    { path: "/chat", label: "Chat"},
+    { path: "/whiteboard", label: "Whiteboard"},
+    { path: "/admin-dashboard", label: "Create-Project"}
   ];
 
   return (

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
+import PageTransition from "../components/PageTransition";
 
 const Admintasks = ({member}) => {
   const { projectId } = useParams();
@@ -38,7 +39,7 @@ const Admintasks = ({member}) => {
   };
 
   return (
-    
+    <PageTransition>
     <div className="admin-tasks">
     
       <h1>Tasks for Project {projectId}</h1>
@@ -88,6 +89,7 @@ const Admintasks = ({member}) => {
         )}
       </div>
     </div>
+    </PageTransition>
   );
 };
 

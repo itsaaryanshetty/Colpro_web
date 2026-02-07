@@ -1,9 +1,10 @@
 import React from "react";
 import Header from "../components/Header";
 import { Link } from "react-router-dom";
+import PageTransition from "../components/PageTransition";
 
 const Home =() => {
-  return <>
+  return <PageTransition>
   
   <div className="bg-gradient-to-r from-emerald-200 to-emerald-900 h-screen">
         
@@ -39,7 +40,7 @@ const Home =() => {
         </div>
 
           
-        </>
+        </PageTransition>
 };
 
 export default Home; 

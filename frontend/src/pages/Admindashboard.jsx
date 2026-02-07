@@ -3,6 +3,7 @@ import Sidebar from "../components/Sidebar";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { authService } from "../services/authService";
+import PageTransition from "../components/PageTransition";
 
 const API_BASE_URL = "http://localhost:8000";
 
@@ -170,6 +171,31 @@ const AdminDashboard = () => {
     }
   };
 
+  const handleDeleteProject = async (projectId) => {
+    if (!window.confirm("Are you sure you want to delete this project? All associated tasks will also be deleted.")) {
+      return;
+    }
+
+    try {
+      const token = authService.getToken();
+      await axios.delete(
+        `${API_BASE_URL}/projects/${projectId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      
+      setProjects((prev) => prev.filter((p) => p.id !== projectId));
+      alert("Project deleted successfully!");
+    } catch (err) {
+      console.error("Error deleting project:", err);
+      alert("Failed to delete project. Please try again.");
+    }
+  };
+
   // Show loading while verifying authentication
   if (isLoading) {
     return (
@@ -184,7 +210,7 @@ const AdminDashboard = () => {
     return null;
   }
 
-  return (
+  return (<PageTransition>
     <div className="admin-dashboard bg-gradient-to-r from-emerald-200 to-emerald-900 min-h-screen">
       <div className="flex">
         <Sidebar role="admin" />
@@ -193,7 +219,7 @@ const AdminDashboard = () => {
             Admin Dashboard
           </h1>
 
-          <div className="bg-emerald-950 p-6 w-200 rounded-lg shadow-lg mb-8">
+          <div className="bg-emerald-950 p-6 max-w-200 rounded-lg shadow-lg mb-8 flex-none">
             <h2 className="text-xl text-emerald-300 font-bold mb-4">
               Create New Project
             </h2>
@@ -275,7 +301,7 @@ const AdminDashboard = () => {
 
           </div>
 
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-4 gap-5">
             {projects.map((project) => (
               <div
                 key={project.id}
@@ -293,12 +319,19 @@ const AdminDashboard = () => {
                     ))}
                   </ul>
                 )}
+                <button
+                  className="mt-4 bg-gray-300 text-red-600 px-3 py-2 rounded hover:bg-gray-400 transition-colors  max-w-40"
+                  onClick={() => handleDeleteProject(project.id)}
+                >
+                  Delete Project
+                </button>
               </div>
             ))}
           </div>
         </div>
       </div>
     </div>
+    </PageTransition>
   );
 };
 

@@ -9,7 +9,7 @@ class Message(Base):
     id = Column(Integer, primary_key=True, index=True)
     content = Column(Text, nullable=False)
     sender_id = Column(Integer, ForeignKey("Users.id"), nullable=False)
-    project_id = Column(Integer, ForeignKey("Projects.id"), nullable=True)  # Optional: for project-specific chats
+    project_id = Column(Integer, ForeignKey("Projects.id"), nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
     is_read = Column(Boolean, default=False)
     

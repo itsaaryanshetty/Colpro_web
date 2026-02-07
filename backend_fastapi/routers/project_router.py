@@ -59,3 +59,27 @@ def get_project_by_id(
     except Exception as error:
         print(error)
         raise error
+
+@projectRouter.delete("/{project_id}", status_code=200)
+def delete_project(
+    project_id: int,
+    current_user: UserOutput = Depends(get_current_user),
+    session: Session = Depends(get_db),
+    token: str = Depends(security)
+):
+    try:
+        if current_user.role != "Admin":
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Only Admins can delete Projects"
+            )
+        
+        return ProjectService(session=session).delete_project(
+            project_id=project_id,
+            owner_id=current_user.id
+        )
+    except HTTPException as he:
+        raise he
+    except Exception as error:
+        print(error)
+        raise error

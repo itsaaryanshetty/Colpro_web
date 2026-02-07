@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { authService } from "../services/authService";
+import PageTransition from "../components/PageTransition";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -43,6 +44,7 @@ const Login = () => {
   };
 
   return (
+    <PageTransition>
     <div className="flex min-h-screen flex-1 flex-col px-6 py-4 lg:px-8 bg-gradient-to-r from-emerald-200 to-emerald-900">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <h2 className="mt-20 text-center text-2xl font-bold tracking-tight text-emerald-950">
@@ -114,6 +116,7 @@ const Login = () => {
         </p>
       </div>
     </div>
+    </PageTransition>
   );
 };
 

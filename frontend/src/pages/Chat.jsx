@@ -3,6 +3,7 @@ import { chatService } from '../services/chatService';
 import { authService } from '../services/authService';
 import Sidebar from '../components/Sidebar';
 import { useNavigate } from 'react-router-dom';
+import PageTransition from '../components/PageTransition';
 
 const Chat = () => {
   const navigate = useNavigate();
@@ -127,6 +128,7 @@ const Chat = () => {
   }
 
   return (
+    <PageTransition>
     <div className="flex bg-gradient-to-r from-emerald-200 to-emerald-900 h-screen overflow-hidden">
       <Sidebar />
       
@@ -250,6 +252,7 @@ const Chat = () => {
 
       </div>
     </div>
+    </PageTransition>
   );
 };
 

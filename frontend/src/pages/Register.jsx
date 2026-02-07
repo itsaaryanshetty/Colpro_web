@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { authService } from "../services/authService";
+import PageTransition from "../components/PageTransition";
+
 
 const Register = () => {
   const navigate = useNavigate();
@@ -38,6 +40,7 @@ const Register = () => {
   };
 
   return (
+    <PageTransition>
     <div className="min-h-screen bg-gradient-to-r from-emerald-200 to-emerald-900">
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-4 lg:px-8 ">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
@@ -175,6 +178,7 @@ const Register = () => {
         </div>
       </div>
     </div>
+    </PageTransition>
   );
 };
 

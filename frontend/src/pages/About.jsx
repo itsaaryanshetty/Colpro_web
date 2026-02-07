@@ -1,5 +1,6 @@
 import React from "react";
 import Colprous from '../assets/Colprous.jpeg';
+import PageTransition from "../components/PageTransition";
 
 
 import { FaLinkedin, FaWhatsapp, FaGithub, FaInstagram } from "react-icons/fa";
@@ -11,7 +12,9 @@ import { Link } from "react-router-dom";
 
 
 const About =()=> {
-    return (<div>
+    return (
+    <PageTransition>
+    <div>
       
         
         <div className="flex h-screen bg-emerald-100">
@@ -68,6 +71,7 @@ const About =()=> {
         ></div>
       </div>
       </div>
+      </PageTransition>
     );
     };
 export default About;

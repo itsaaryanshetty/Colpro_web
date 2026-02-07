@@ -5,6 +5,8 @@ import Sidebar from "../components/Sidebar";
 import axios from "axios";
 import { authService } from "../services/authService";
 import { useNavigate } from "react-router-dom";
+import PageTransition from "../components/PageTransition";
+
 
 const API_BASE_URL = "http://localhost:8000";
 
@@ -142,6 +144,7 @@ function Taskdetails() {
   }
 
   return (
+    <PageTransition>
     <div className="flex bg-gradient-to-r from-emerald-200 to-emerald-900 min-h-screen">
       <Sidebar />
       <div className="p-6 flex-1">
@@ -174,6 +177,7 @@ function Taskdetails() {
         )}
       </div>
     </div>
+    </PageTransition>
   );
 }
 

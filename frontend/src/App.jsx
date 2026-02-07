@@ -14,7 +14,7 @@ import Memberdashboard from "./pages/Memberdashboard";
 import Taskdetails from "./pages/Taskdetails";
 import Register from "./pages/Register";
 import Notfound from "./pages/Notfound";
-import Taskcard from "./components/Taskcard";
+// import Taskcard from "./components/Taskcard";
 import About from "./pages/About";
 import Header from "./components/Header";
 import Home from "./pages/Home";
@@ -22,7 +22,9 @@ import Team from "./pages/Team";
 import LogoutButton from "./pages/Logout";
 import Dashboard from "./pages/Dashboard";
 import Chat from "./pages/Chat";
+import Whiteboard from "./pages/Whiteboard";
 import { authService} from "./services/authService";
+
 
 const RequireAuth = ({ children }) => {
   const location = useLocation();
@@ -75,7 +77,10 @@ function App() {
   return (
     <>
       <Router>
+        
         <Header />
+
+         
         <Routes>
           {/* Public routes */}
           <Route path="/" element={<Home />} />
@@ -92,10 +97,12 @@ function App() {
           <Route path="/member-dashboard" element={<RequireAuth><Memberdashboard /></RequireAuth>} />
           <Route path="/dashboard" element={<RequireAuth><Dashboard /></RequireAuth>} />
           <Route path="/chat" element={<RequireAuth><Chat/></RequireAuth>} />
+          <Route path="/whiteboard" element={<RequireAuth><Whiteboard/></RequireAuth>} />
           <Route path="/logout" element={<LogoutButton />} />
           {/* Fallback */}
           <Route path="*" element={<Notfound />} />
         </Routes>
+       
       </Router>
     </>
   );

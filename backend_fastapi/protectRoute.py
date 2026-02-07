@@ -42,3 +42,18 @@ def get_current_user(
     
     print("DEBUG: Invalid payload or missing user_id")
     raise auth_exception
+
+def get_current_user_id(
+    credentials = Depends(security)
+) -> int:
+    """Get just the user ID (lighter than full user object)"""
+    token = credentials.credentials
+    payload = AuthHandler.decode_jwt(token=token)
+    
+    if not payload or not payload.get("user_id"):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid Authentication"
+        )
+    
+    return payload["user_id"]
