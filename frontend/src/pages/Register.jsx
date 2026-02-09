@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { authService } from "../services/authService";
 import PageTransition from "../components/PageTransition";
-
+import { User, Mail, Lock, Check, ArrowRight } from "lucide-react";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -21,280 +21,193 @@ const Register = () => {
     setError("");
     setLoading(true);
 
-    try{
+    try {
       const response = await authService.signup(formData);
       console.log("Registration successful:", response);
       navigate("/member-dashboard");
-    }catch(error){
+    } catch (error) {
       console.error("Registration failed:", error);
       setError(error.message || "Registration failed. Please try again.");
-    }finally{
+    } finally {
       setLoading(false);
     }
-
-    // // Simulate registration without backend
-    // setTimeout(() => {
-    //   setLoading(false);
-    //   navigate("/login");
-    // }, 500);
   };
 
   return (
     <PageTransition>
-    <div className="min-h-screen bg-gradient-to-r from-emerald-200 to-emerald-900">
-      <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-4 lg:px-8 ">
-        <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-          <h2 className="mt-5 text-center text-2xl font-bold tracking-tight text-emerald-900">
-            Sign Up
-          </h2>
+      <div className="flex min-h-screen flex-1 flex-col justify-center px-6 py-12 lg:px-8 bg-slate-950 relative overflow-hidden">
+
+        {/* Background blobs */}
+        <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
+          <div className="absolute bottom-[20%] -left-[10%] w-[50%] h-[50%] rounded-full bg-emerald-500/10 blur-[100px] animate-blob"></div>
+          <div className="absolute top-[10%] -right-[10%] w-[40%] h-[40%] rounded-full bg-teal-500/10 blur-[100px] animate-blob animation-delay-2000"></div>
         </div>
 
-        <div className="mt-5 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form
-            onSubmit={handleSubmit}
-            className="py-7 px-4 bg-[#A1E4C0] space-y-6 rounded-md shadow-xl"
-          >
-            <div>
-              <label htmlFor="first_name" className="block text-sm font-medium text-gray-900">
-                First Name
-              </label>
-              <div className="mt-2">
-                <input
-                  id="first_name"
-                  name="first_name"
-                  type="text"
-                  required
-                  placeholder="Enter your first name"
-                  className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-emerald-700 sm:text-sm"
-                  value={formData.first_name}
-                  onChange={(e) => setFormData({...formData, first_name: e.target.value})}
-                />
-              </div>
-            </div>
+        <div className="sm:mx-auto sm:w-full sm:max-w-md">
+          <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-white">
+            Create your account
+          </h2>
+          <p className="mt-2 text-center text-sm text-slate-400">
+            Join <span className="text-emerald-400 font-semibold">Colpro</span> to manage projects efficiently
+          </p>
+        </div>
 
-            <div>
-              <label htmlFor="last_name" className="block text-sm font-medium text-gray-900">
-                Last Name
-              </label>
-              <div className="mt-2">
-                <input
-                  id="last_name"
-                  name="last_name"
-                  type="text"
-                  required
-                  placeholder="Enter your last name"
-                  className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-emerald-700 sm:text-sm"
-                  value={formData.last_name}
-                  onChange={(e) => setFormData({...formData, last_name: e.target.value})}
-                />
-              </div>
-            </div>
+        <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-md">
+          <div className="bg-slate-900/50 backdrop-blur-md py-8 px-8 shadow-2xl rounded-2xl border border-slate-800">
+            <form className="space-y-5" onSubmit={handleSubmit}>
 
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-900">
-                Email address
-              </label>
-              <div className="mt-2">
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  required
-                  autoComplete="email"
-                  placeholder="Enter your email"
-                  className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-emerald-700 sm:text-sm"
-                  value={formData.email}
-                  onChange={(e) => setFormData({...formData, email: e.target.value})}
-                />
-              </div>
-            </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label htmlFor="first_name" className="block text-sm font-medium leading-6 text-slate-300">
+                    First Name
+                  </label>
+                  <div className="mt-2 relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <User className="h-4 w-4 text-slate-500" />
+                    </div>
+                    <input
+                      id="first_name"
+                      name="first_name"
+                      type="text"
+                      required
+                      placeholder="John"
+                      className="block w-full rounded-xl border-0 bg-slate-800/50 py-2.5 pl-9 pr-3 text-white shadow-sm ring-1 ring-inset ring-slate-700 placeholder:text-slate-500 focus:ring-2 focus:ring-inset focus:ring-emerald-500 sm:text-sm sm:leading-6 transition-all"
+                      value={formData.first_name}
+                      onChange={(e) => setFormData({ ...formData, first_name: e.target.value })}
+                    />
+                  </div>
+                </div>
 
-            <div>
-              <div className="flex items-center justify-between">
-                <label htmlFor="password" className="block text-sm font-medium text-gray-900">
+                <div>
+                  <label htmlFor="last_name" className="block text-sm font-medium leading-6 text-slate-300">
+                    Last Name
+                  </label>
+                  <div className="mt-2 relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <User className="h-4 w-4 text-slate-500" />
+                    </div>
+                    <input
+                      id="last_name"
+                      name="last_name"
+                      type="text"
+                      required
+                      placeholder="Doe"
+                      className="block w-full rounded-xl border-0 bg-slate-800/50 py-2.5 pl-9 pr-3 text-white shadow-sm ring-1 ring-inset ring-slate-700 placeholder:text-slate-500 focus:ring-2 focus:ring-inset focus:ring-emerald-500 sm:text-sm sm:leading-6 transition-all"
+                      value={formData.last_name}
+                      onChange={(e) => setFormData({ ...formData, last_name: e.target.value })}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium leading-6 text-slate-300">
+                  Email address
+                </label>
+                <div className="mt-2 relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Mail className="h-5 w-5 text-slate-500" />
+                  </div>
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    required
+                    placeholder="name@company.com"
+                    className="block w-full rounded-xl border-0 bg-slate-800/50 py-2.5 pl-10 pr-3 text-white shadow-sm ring-1 ring-inset ring-slate-700 placeholder:text-slate-500 focus:ring-2 focus:ring-inset focus:ring-emerald-500 sm:text-sm sm:leading-6 transition-all"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label htmlFor="password" className="block text-sm font-medium leading-6 text-slate-300">
                   Password
                 </label>
-              </div>
-              <div className="mt-2">
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  required
-                  autoComplete="current-password"
-                  placeholder="Password"
-                  className="block w-full rounded-lg bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-emerald-700 sm:text-sm"
-                  value={formData.password}
-                  onChange={(e) => setFormData({...formData, password: e.target.value})}
-                />
-              </div>
-            </div>
-
-            <div className="mt-4">
-              <span className="block text-sm font-medium text-gray-900 mb-2">
-                Select Role
-              </span>
-              <div className="flex items-center space-x-4">
-                <label className="flex items-center">
+                <div className="mt-2 relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Lock className="h-5 w-5 text-slate-500" />
+                  </div>
                   <input
-                    type="radio"
-                    name="role"
-                    value={formData.role}
-                    checked={formData.role === "Admin"}
-                    onChange={() => setFormData({...formData, role: "Admin"})}
-                    className="h-4 w-4 text-emerald-600 border-gray-300 focus:ring-emerald-600"
+                    id="password"
+                    name="password"
+                    type="password"
+                    required
+                    placeholder="••••••••"
+                    className="block w-full rounded-xl border-0 bg-slate-800/50 py-2.5 pl-10 pr-3 text-white shadow-sm ring-1 ring-inset ring-slate-700 placeholder:text-slate-500 focus:ring-2 focus:ring-inset focus:ring-emerald-500 sm:text-sm sm:leading-6 transition-all"
+                    value={formData.password}
+                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                   />
-                  <span className="ml-2 text-gray-700">Admin</span>
-                </label>
-
-                <label className="flex items-center">
-                  <input
-                    type="radio"
-                    name="role"
-                    value={formData.role}
-                    checked={formData.role === "Member"}
-                    onChange={() => setFormData({...formData, role: "Member"})}
-                    className="h-4 w-4 text-emerald-600 border-gray-300 focus:ring-emerald-600"
-                  />
-                  <span className="ml-2 text-gray-700">Member</span>
-                </label>
+                </div>
               </div>
-            </div>
 
-            {error && <p className="text-sm text-red-700">{error}</p>}
+              <div className="pt-2">
+                <span className="block text-sm font-medium text-slate-300 mb-2">
+                  I am a...
+                </span>
+                <div className="grid grid-cols-2 gap-4">
+                  <label className={`flex items-center justify-center p-3 rounded-xl border cursor-pointer transition-all ${formData.role === "Member" ? "bg-emerald-500/20 border-emerald-500 text-emerald-400" : "bg-slate-800/50 border-slate-700 text-slate-400 hover:bg-slate-800"}`}>
+                    <input
+                      type="radio"
+                      name="role"
+                      value="Member"
+                      checked={formData.role === "Member"}
+                      onChange={() => setFormData({ ...formData, role: "Member" })}
+                      className="sr-only"
+                    />
+                    <div className="flex items-center gap-2">
+                      {formData.role === "Member" && <Check size={16} />}
+                      <span className="font-medium">Member</span>
+                    </div>
+                  </label>
 
-            <div>
-              <button
-                type="submit"
-                disabled={loading}
-                className="flex w-full justify-center rounded-md bg-emerald-800 px-3 py-1.5 
-                text-sm font-semibold text-white shadow hover:bg-cyan-900 
-                focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700 disabled:opacity-60"
-              >
-                {loading ? "Signing up..." : "Sign Up"}
-              </button>
-            </div>
-          </form>
+                  <label className={`flex items-center justify-center p-3 rounded-xl border cursor-pointer transition-all ${formData.role === "Admin" ? "bg-emerald-500/20 border-emerald-500 text-emerald-400" : "bg-slate-800/50 border-slate-700 text-slate-400 hover:bg-slate-800"}`}>
+                    <input
+                      type="radio"
+                      name="role"
+                      value="Admin"
+                      checked={formData.role === "Admin"}
+                      onChange={() => setFormData({ ...formData, role: "Admin" })}
+                      className="sr-only"
+                    />
+                    <div className="flex items-center gap-2">
+                      {formData.role === "Admin" && <Check size={16} />}
+                      <span className="font-medium">Admin</span>
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              {error && (
+                <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm flex items-center gap-2">
+                  <span>⚠️</span> {error}
+                </div>
+              )}
+
+              <div className="pt-2">
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="flex w-full justify-center items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 px-3 py-2.5 text-sm font-bold text-white shadow-lg shadow-emerald-900/20 hover:from-emerald-400 hover:to-teal-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-500 disabled:opacity-70 disabled:cursor-not-allowed transition-all hover:scale-[1.02]"
+                >
+                  {loading ? "Creating account..." : "Create Account"}
+                  {!loading && <ArrowRight size={16} />}
+                </button>
+              </div>
+            </form>
+
+            <p className="mt-8 text-center text-sm text-slate-400">
+              Already have an account?{" "}
+              <Link to="/login" className="font-semibold leading-6 text-emerald-400 hover:text-emerald-300 transition-colors">
+                Log in
+              </Link>
+            </p>
+          </div>
         </div>
       </div>
-    </div>
     </PageTransition>
   );
 };
 
 export default Register;
-
-
-
-
-
-
-
-
-
-{/* <div className="min-h-screen bg-gradient-to-r from-emerald-200 to-emerald-900 background-blend-difference">
-    
-    <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-4 lg:px-8 ">
-    <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-      <h2 className="mt-5 text-center text-2xl/9 font-bold tracking-tight text-emerald-900">
-      Sign Up
-      </h2>
-    </div>
-  
-    <div className="mt-5 sm:mx-auto sm:w-full sm:max-w-sm">
-      <form action="#" method="POST" className="py-7 px-4 bg-[#A1E4C0] space-y-6 rounded-md shadow-xl">
-        <div>
-          <label htmlFor="username" className="block text-sm/6 font-medium text-gray-900">
-            Username
-          </label>
-          <div className="mt-2">
-          <input
-            id="username"
-            name="username"
-            type="text"
-            required
-            placeholder="Enter your username"
-            className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-            />
-          </div>
-  
-        </div>
-        <div>
-          <label htmlFor="email" className="block text-sm/6 font-medium text-gray-900">
-            Email address
-          </label>
-          <div className="mt-2">
-            <input
-              id="email"
-              name="email"
-              type="email"
-              required
-              autoComplete="email"
-              placeholder="Enter your email"
-              className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-            />
-          </div>
-        </div>
-  
-        <div>
-          <div className="flex items-center justify-between">
-            <label htmlFor="password" className="block text-sm/6 font-medium text-gray-900">
-              Password
-            </label>
-          </div>
-          <div className="mt-2">
-            <input
-              id="password"
-              name="password"
-              type="password"
-              required
-              autoComplete="current-password"
-              placeholder="password"
-              className="block w-full rounded-lg bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-            />
-          </div>
-        </div>
-  
-        <div className="mt-4">
-  <span className="block text-sm font-medium text-gray-900 mb-2">
-    Select Role
-  </span>
-  <div className="flex items-center space-x-4">
-    <label className="flex items-center">
-      <input
-        type="radio"
-        name="role"
-        value="ADMIN"
-        className="h-4 w-4 text-emerald-600 border-gray-300 focus:ring-emerald-600"
-      />
-      <span className="ml-2 text-gray-700">Admin</span>
-    </label>
-  
-    <label className="flex items-center">
-      <input
-        type="radio"
-        name="role"
-        value="MEMBER"
-        className="h-4 w-4 text-emerald-600 border-gray-300 focus:ring-indigo-600"
-      />
-      <span className="ml-2 text-gray-700">Member</span>
-    </label>
-    </div>
-    </div>
-        
-  
-        <div>
-          <button
-            type="submit"
-            className="flex w-full justify-center rounded-md bg-emerald-800 px-3 py-1.5 
-            text-sm/6 font-semibold text-white shadow-xs hover:bg-cyan-900 
-            focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-            Sign Up
-          </button>
-        </div>
-      </form>
-  
-      
-    </div>
-  </div>
-  </div> */}

@@ -22,6 +22,46 @@ def get_tasks(
     except Exception as error:
         print(error)
         raise error
+    
+@taskRouter.get("/leaderboard/stats", status_code=200)
+def get_leaderboard(
+    current_user: UserOutput = Depends(get_current_user),
+    session: Session = Depends(get_db)
+):
+    try:
+        from sqlalchemy import func
+        from models import Task, User
+
+        leaderboard = (
+            session.query(
+                User.id,
+                User.first_name,
+                User.last_name,
+                User.email,
+                func.count(Task.id).label("tasks_completed")
+            )
+            .outerjoin(Task, Task.assignee_id == User.id)
+            .filter(Task.status == "DONE")
+            .group_by(User.id, User.first_name, User.last_name, User.email)
+            .order_by(func.count(Task.id).desc())
+            .all()
+        )
+
+        result = [
+            {
+                "user_id": User.id,
+                "first_name": User.first_name,
+                "last_name": User.last_name,
+                "email": User.email,
+                "tasks_completed": User.tasks_completed
+            }
+            for User in leaderboard
+        ]
+        return result
+    except Exception as error:
+        print(error)
+        raise HTTPException(status_code=500, detail="Internal server error")
+
 
 @taskRouter.get("/{task_id}", status_code=200, response_model=TaskOutput)
 def get_task_by_id(

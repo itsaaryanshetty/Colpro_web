@@ -1,77 +1,123 @@
 import React from "react";
 import Colprous from '../assets/Colprous.jpeg';
 import PageTransition from "../components/PageTransition";
-
-
+import { Github, Linkedin, Instagram, Mail } from "lucide-react";
+// Note: Lucide doesn't have Whatsapp, sticking to Lucide for consistency or could use react-icons if preferred. 
+// Given the previous file used react-icons for all, I'll switch to Lucide for a modern feel where possible, 
+// but for brand icons like Whatsapp that might be missing, I'll use a generic MessageCircle or stick to react-icons if I import them.
+// Let's stick to react-icons for the brands to match the specific requests (Whatsapp/Linkedin/Instagram/Github).
+// Actually, to keep the "new premium theme" consistent with other pages (which use Lucide), I should try to use Lucide where possible.
+// But Lucide doesn't have brand icons usually. 
+// I will import react-icons for the brands as they are specific.
 import { FaLinkedin, FaWhatsapp, FaGithub, FaInstagram } from "react-icons/fa";
 
-
-
-import Header from "../components/Header";
-import { Link } from "react-router-dom";
-
-
-const About =()=> {
-    return (
+const About = () => {
+  return (
     <PageTransition>
-    <div>
-      
-        
-        <div className="flex h-screen bg-emerald-100">
-        <div className="flex-1 p-15">
-          <h1 className="text-4xl font-bold">About Us</h1>
-          <p className="mt-4 text-2xl py-5 space-y-20">
-            Welcome to my platform. 
-            You can check my Github for the projects i have done and approach me through Whatsapp/ Linkedin/ Instagram. 
-            If you are still wondering why Colpro, the name comes from Improving team <span className=" text-cyan-800 font-bold">Col</span>laboration and Increasing <span className="text-cyan-800 font-bold">pro</span>ductivity
-          </p>
-          
-          <div className="quick-actions flex justify-center items-center grid grid-cols-2 gap-6 py-30 px-10">
-            <div className="action-card flex flex-row p-8 rounded-lg shadow-lg gap-10">
-            <a href="https://www.linkedin.com/in/aaryan-shetty-5a181b284/"><FaLinkedin size={30} color="oklch(0.378 0.077 168.94)" /></a>
-            <a href="https://wa.me/9175026467"><FaWhatsapp size={30} color="oklch(0.378 0.077 168.94)" /></a>
-            <a href="https://github.com/itsaaryanshetty"><FaGithub size={30} color="oklch(0.378 0.077 168.94)" /></a>
-            <a href="https://www.instagram.com/itsaaryan_shetty/"><FaInstagram size={30} color="oklch(0.378 0.077 168.94)" /></a>
-            </div>  
-          </div>
-          
-          
-          {/* <div className="linkedin py-6 flex flex-col items-center space-y-10 bg-gray-100 rounded-2xl shadow-lg p-8 mt-40">
-  {/* <h2 className="text-2xl font-bold text-gray-800 ">Meet the Team</h2>
-  <div className="team-members grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-3xl"> 
-     Aaryan 
-     <a href='https://www.linkedin.com/in/aaryan-shetty-5a181b284/?originalSubdomain=in'>
-    <div className="team-card flex items-center gap-4 bg-cyan-950 p-4 rounded-lg shadow-md hover:shadow-lg">
-      <div className="icon bg-blue-100 text-blue-600 p-3 rounded-full">
-        <FaLinkedinIn size={20} />
-      </div>
-      <div>
-        <h3 className="font-bold text-md text-sky-200">Aaryan Shetty</h3>
-        <p className="text-sky-200"></p>
-      </div>
-    </div>
-    </a> 
+      <div className="min-h-screen bg-slate-950 text-slate-50 pt-24 pb-12 relative overflow-hidden font-sans selection:bg-emerald-500/30">
 
-    
-  
-</div> */}
-
+        {/* Background Blobs */}
+        <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
+          <div className="absolute top-[10%] -left-[10%] w-[50%] h-[50%] rounded-full bg-emerald-500/10 blur-[120px] animate-blob"></div>
+          <div className="absolute bottom-[10%] -right-[10%] w-[50%] h-[50%] rounded-full bg-blue-500/10 blur-[120px] animate-blob animation-delay-2000"></div>
         </div>
-        
-        <div
-          className="flex-1 brightness-100 "
-          style={{
-            backgroundImage: `url(${Colprous})`,
-            backgroundSize: '60%',
-            backgroundRepeat:'no-repeat',
-            backgroundPosition: 'center',
-            backgroundPositionX: 'right',
-            backgroundPositionY: 'top',
-          }}
-        ></div>
+
+        <div className="container mx-auto px-6 max-w-7xl">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+
+            {/* Text Content */}
+            <div className="space-y-8 animate-in slide-in-from-left duration-700 fade-in order-2 lg:order-1">
+              <div>
+                <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-6">
+                  About <span className="bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">Colpro</span>
+                </h1>
+                <p className="text-lg md:text-xl text-slate-300 leading-relaxed">
+                  Welcome to the future of project management.
+                  <span className="text-emerald-400 font-semibold block mt-4 text-2xl">
+                    Collaboration + Productivity = Colpro
+                  </span>
+                </p>
+                <p className="mt-6 text-slate-400 leading-relaxed">
+                  Colpro is designed to streamline your workflow, bringing teams together to achieve more in less time.
+                  Whether you're tracking tasks, analyzing performance, or scaling your dream project, we've got you covered.
+                </p>
+              </div>
+
+              {/* Developer / Contact Section */}
+              <div className="bg-slate-900/50 backdrop-blur-md border border-slate-800 rounded-3xl p-8 shadow-2xl">
+                <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+                  <span className="w-8 h-1 bg-emerald-500 rounded-full"></span>
+                  Connect with the Developer
+                </h3>
+
+                <div className="flex flex-wrap gap-4">
+                  <SocialButton
+                    href="https://www.linkedin.com/in/aaryan-shetty-5a181b284/"
+                    icon={<FaLinkedin size={24} />}
+                    label="LinkedIn"
+                    color="hover:bg-[#0077b5]"
+                  />
+                  <SocialButton
+                    href="https://github.com/itsaaryanshetty"
+                    icon={<FaGithub size={24} />}
+                    label="GitHub"
+                    color="hover:bg-[#333]"
+                  />
+                  <SocialButton
+                    href="https://wa.me/9175026467"
+                    icon={<FaWhatsapp size={24} />}
+                    label="WhatsApp"
+                    color="hover:bg-[#25D366]"
+                  />
+                  <SocialButton
+                    href="https://www.instagram.com/itsaaryan_shetty/"
+                    icon={<FaInstagram size={24} />}
+                    label="Instagram"
+                    color="hover:bg-[#E1306C]"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Hero Image / Graphic */}
+            <div className="relative order-1 lg:order-2 flex justify-center lg:justify-end animate-in slide-in-from-right duration-700 fade-in">
+              <div className="relative w-full max-w-md aspect-square rounded-[3rem] overflow-hidden shadow-2xl border-4 border-slate-800/50 group">
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent z-10 opacity-60"></div>
+                <img
+                  src={Colprous}
+                  alt="Colpro Team"
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                />
+
+                {/* Floating Badge */}
+                <div className="absolute bottom-6 left-6 right-6 z-20 bg-slate-900/90 backdrop-blur-md p-4 rounded-2xl border border-slate-700/50">
+                  <p className="text-emerald-400 font-bold text-sm uppercase tracking-wider mb-1">Developer</p>
+                  <p className="text-white font-bold text-xl">Aaryan Shetty</p>
+                </div>
+              </div>
+
+              {/* Decorative Elements */}
+              <div className="absolute -top-12 -right-12 w-24 h-24 bg-emerald-500/20 rounded-full blur-2xl animate-pulse"></div>
+              <div className="absolute -bottom-12 -left-12 w-32 h-32 bg-teal-500/20 rounded-full blur-2xl animate-pulse delay-700"></div>
+            </div>
+
+          </div>
+        </div>
       </div>
-      </div>
-      </PageTransition>
-    );
-    };
+    </PageTransition>
+  );
+};
+
+const SocialButton = ({ href, icon, label, color }) => (
+  <a
+    href={href}
+    target="_blank"
+    rel="noopener noreferrer"
+    className={`flex items-center gap-3 px-5 py-3 rounded-xl bg-slate-800 text-slate-300 transition-all duration-300 hover:text-white ${color} hover:shadow-lg hover:-translate-y-1 group`}
+  >
+    <span className="transition-transform group-hover:scale-110">{icon}</span>
+    <span className="font-medium">{label}</span>
+  </a>
+);
+
 export default About;

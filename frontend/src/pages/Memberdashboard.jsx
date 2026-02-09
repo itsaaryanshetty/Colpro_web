@@ -2,103 +2,98 @@ import React, { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import {authService} from "../services/authService";
+import { authService } from "../services/authService";
 import PageTransition from "../components/PageTransition";
-// adding the pie chart feature
-import {PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip} from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
+import { LayoutDashboard, CheckCircle2, Clock, ListTodo, ArrowRight } from "lucide-react";
 
 const API_BASE_URL = "http://localhost:8000";
 
 const Memberdashboard = () => {
   const navigate = useNavigate();
   const [tasks, setTasks] = useState([]);
-  const [currentUser, setCurrentUser] = useState(null);  // ✅ ADDED: Missing state
+  const [currentUser, setCurrentUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-      const verifyMemberAccess = async () => {
+    const verifyMemberAccess = async () => {
+      const token = authService.getToken();
+
+      if (!token) {
+        navigate("/login");
+        return;
+      }
+
+      try {
+        const response = await authService.getProtectedData();
+        setCurrentUser(response.data);
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Authentication failed:", error);
+        authService.logout();
+        navigate("/login");
+      }
+    };
+
+    verifyMemberAccess();
+  }, [navigate]);
+
+  useEffect(() => {
+    if (!currentUser) return;
+    const fetchTasks = async () => {
+      try {
         const token = authService.getToken();
-        
-        // No token at all
-        if (!token) {
-          navigate("/login");
-          return;
-        }
-  
-        try {
-          // Verify token and get user data from backend
-          const response = await authService.getProtectedData();  
-          setCurrentUser(response.data);
-          setIsLoading(false);
-        } catch (error) {
-          console.error("Authentication failed:", error);
-          authService.logout();
-          navigate("/login");
-        }
-      };
-  
-      verifyMemberAccess();
-    }, [navigate]);
+        const res = await axios.get(`${API_BASE_URL}/tasks/`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setTasks(res.data);
+      } catch (err) {
+        console.error("Error fetching tasks", err);
+      }
+    };
 
-    //fetch tasks
-    useEffect(() => {
-      if (!currentUser) return;
-      const fetchTasks = async () => {
-        try {
-          const token = authService.getToken();
-          const res = await axios.get(`${API_BASE_URL}/tasks/`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-          setTasks(res.data);
-        } catch (err) {
-          console.error("Error fetching tasks", err);
-        }
-      };
+    fetchTasks();
+  }, [currentUser]);
 
-      fetchTasks();
-    }, [currentUser]);
-
-    if (isLoading) {
-      return (
-        <div className="flex items-center justify-center min-h-screen">
-          <div className="text-2xl font-bold">Loading...</div>
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-slate-950">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+          <div className="text-xl font-medium text-emerald-400">Loading dashboard...</div>
         </div>
-      );
-    }
+      </div>
+    );
+  }
 
-    if (!currentUser) {
-      return null;
-    }
-  
+  if (!currentUser) return null;
 
   const totalTasks = tasks.length;
   const completedTasks = tasks.filter((t) => t.status === "DONE").length;
   const inProgressTasks = tasks.filter((t) => t.status === "IN PROGRESS").length;
   const todoTasks = tasks.filter((t) => t.status === "TO DO").length;
 
-  // Prepare data for pie chart
   const chartData = [
     { name: "To Do", value: todoTasks, color: "#3b82f6" },
-    { name: "In Progress", value: inProgressTasks, color: "#f59e0b" },
+    { name: "In Progress", value: inProgressTasks, color: "#eab308" },
     { name: "Done", value: completedTasks, color: "#10b981" }
-  ].filter(item => item.value > 0); // Only show segments with tasks
+  ].filter(item => item.value > 0);
 
-  // Custom label for pie chart
   const renderCustomLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
     const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
     const x = cx + radius * Math.cos(-midAngle * Math.PI / 180);
     const y = cy + radius * Math.sin(-midAngle * Math.PI / 180);
 
     return (
-      <text 
-        x={x} 
-        y={y} 
-        fill="white" 
-        textAnchor={x > cx ? 'start' : 'end'} 
+      <text
+        x={x}
+        y={y}
+        fill="white"
+        textAnchor={x > cx ? 'start' : 'end'}
         dominantBaseline="central"
-        className="font-bold text-sm"
+        className="font-bold text-xs"
       >
         {`${(percent * 100).toFixed(0)}%`}
       </text>
@@ -107,69 +102,93 @@ const Memberdashboard = () => {
 
   return (
     <PageTransition>
-      <div className="memberdashboard bg-gradient-to-r from-emerald-200 to-emerald-900 min-h-screen">
-        <div className="flex">
-          <Sidebar role="member" />
+      <div className="min-h-screen bg-slate-950 text-slate-50 flex">
+        <Sidebar role="member" />
 
-          <div className="main-content w-full p-6">
-            <header className="dashboard-header mb-6">
-              <h1 className="text-4xl font-bold text-emerald-900">Member Dashboard</h1>
-              <p className="text-emerald-700">View tasks and their status</p>
+        <div className="flex-1 overflow-auto pl-0 lg:pl-64">
+          <div className="p-8 max-w-7xl mx-auto pt-24">
+            <header className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
+              <div>
+                <h1 className="text-3xl font-bold text-white mb-2 flex items-center gap-3">
+                  <LayoutDashboard className="text-emerald-400" />
+                  Member Dashboard
+                </h1>
+                <p className="text-slate-400">Welcome back, <span className="text-emerald-400 font-semibold">{currentUser.full_name || 'User'}</span>. Here's your overview.</p>
+              </div>
+              <div className="text-sm text-slate-500 font-medium bg-slate-900 px-4 py-2 rounded-lg border border-slate-800">
+                {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+              </div>
             </header>
 
-            <div className="overview-grid grid grid-cols-3 gap-6 mb-6">
-              <div className="overview-card bg-emerald-950 p-4 rounded-lg shadow-md">
-                <h2 className="text-lg text-cyan-50 font-bold">Total Tasks</h2>
-                <p className="text-2xl font-bold text-emerald-600">{totalTasks}</p>
-              </div>
-
-              <div className="overview-card bg-emerald-950 p-4 rounded-lg shadow-md">
-                <h2 className="text-lg text-cyan-50 font-bold">Your Completed Tasks</h2>
-                <p className="text-2xl font-bold text-yellow-600">{completedTasks}</p>
-              </div>
-
-              <div className="overview-card bg-emerald-950 p-4 rounded-lg shadow-md">
-                <h2 className="text-lg text-cyan-50 font-bold">Your In progress Tasks</h2>
-                <p className="text-2xl font-bold text-red-600">{inProgressTasks}</p>
-              </div>
+            {/* Stats Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+              <StatsCard
+                title="Total Tasks"
+                value={totalTasks}
+                icon={<ListTodo size={24} className="text-blue-400" />}
+                bg="bg-blue-500/10"
+                border="border-blue-500/20"
+                textColor="text-blue-400"
+              />
+              <StatsCard
+                title="In Progress"
+                value={inProgressTasks}
+                icon={<Clock size={24} className="text-yellow-400" />}
+                bg="bg-yellow-500/10"
+                border="border-yellow-500/20"
+                textColor="text-yellow-400"
+              />
+              <StatsCard
+                title="Completed"
+                value={completedTasks}
+                icon={<CheckCircle2 size={24} className="text-emerald-400" />}
+                bg="bg-emerald-500/10"
+                border="border-emerald-500/20"
+                textColor="text-emerald-400"
+              />
             </div>
 
-            <div className="grid grid-cols-2 gap-6 mb-6">
-              {/* Left Column - View Tasks and My Tasks */}
-              <div className="space-y-6">
-                {/* View Tasks Card */}
-                <div className="action-card bg-emerald-200 p-6 rounded-lg shadow-lg">
-                  <h3 className="text-xl font-bold mb-4 text-emerald-900">View my tasks</h3>
-                  <Link
-                    to="/member-tasks"
-                    className="bg-emerald-800 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 inline-block"
-                  >
-                    View
-                  </Link>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+
+              {/* Tasks List Section */}
+              <div className="flex flex-col space-y-6">
+                <div className="bg-gradient-to-br from-slate-900 to-slate-900/50 p-6 rounded-2xl border border-slate-800 shadow-xl relative overflow-hidden">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full blur-2xl -mr-10 -mt-10"></div>
+                  <div className="relative z-10">
+                    <h3 className="text-xl font-bold mb-2 text-white">Focus on your work</h3>
+                    <p className="text-slate-400 mb-6 text-sm">Review your assigned tasks and update their status.</p>
+                    <Link
+                      to="/member-tasks"
+                      className="inline-flex items-center gap-2 bg-emerald-600 text-white px-5 py-2.5 rounded-xl hover:bg-emerald-500 transition-all font-medium text-sm shadow-lg shadow-emerald-900/20 group"
+                    >
+                      View All Tasks
+                      <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                    </Link>
+                  </div>
                 </div>
 
-                {/* My Tasks List */}
-                <div className="bg-emerald-200 rounded-lg shadow-lg p-6">
-                  <h2 className="text-xl font-bold mb-4 text-emerald-900">My Tasks</h2>
+                <div className="bg-slate-900/80 rounded-2xl border border-slate-800 shadow-xl p-6 backdrop-blur-sm flex-1">
+                  <h2 className="text-lg font-bold mb-4 text-white flex items-center gap-2">
+                    <ListTodo size={18} className="text-slate-400" />
+                    Recent Tasks
+                  </h2>
+
                   {tasks.length === 0 ? (
-                    <p className="text-gray-600">No tasks assigned yet.</p>
+                    <div className="flex flex-col items-center justify-center h-40 text-slate-500">
+                      <p>No tasks assigned yet.</p>
+                    </div>
                   ) : (
-                    <ul className="space-y-3">
-                      {tasks.map((t) => (
-                        <li
-                          key={t.id}
-                          className="border-emerald-900 rounded-2xl p-3 bg-white"
-                        >
-                          <div className="flex justify-between items-start">
+                    <ul className="space-y-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+                      {tasks.slice(0, 5).map((t) => (
+                        <li key={t.id} className="group p-4 bg-slate-950/50 hover:bg-slate-800 rounded-xl border border-slate-800 hover:border-emerald-500/30 transition-all cursor-default">
+                          <div className="flex justify-between items-start gap-4">
                             <div className="flex-1">
-                              <p className="font-semibold text-emerald-900">{t.title}</p>
+                              <p className="font-semibold text-slate-200 group-hover:text-emerald-400 transition-colors">{t.title}</p>
                               {t.description && (
-                                <p className="text-sm text-gray-600 mt-1">{t.description}</p>
+                                <p className="text-xs text-slate-500 mt-1 line-clamp-1">{t.description}</p>
                               )}
                             </div>
-                            <span className="text-xs px-3 py-1 rounded-full bg-emerald-200 text-emerald-800 ml-2 whitespace-nowrap">
-                              {t.status}
-                            </span>
+                            <StatusBadge status={t.status} />
                           </div>
                         </li>
                       ))}
@@ -178,73 +197,60 @@ const Memberdashboard = () => {
                 </div>
               </div>
 
-              {/* Right Column - Pie Chart */}
-              <div className="bg-gray-950 rounded-lg shadow-lg p-6">
-                <h2 className="text-2xl font-bold mb-4 text-gray-400">Task Status Distribution</h2>
-                
-                {totalTasks === 0 ? (
-                  <div className="flex items-center justify-center h-80 text-gray-500">
-                    <p>No tasks to display</p>
-                  </div>
-                ) : (
-                  <ResponsiveContainer width="100%" height={300}>
-                    <PieChart>
-                      <Pie
-                        data={chartData}
-                        cx="50%"
-                        cy="50%"
-                        labelLine={false}
-                        label={renderCustomLabel}
-                        outerRadius={100}
-                        fill="#8884d8"
-                        dataKey="value"
-                      >
-                        {chartData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={entry.color} />
-                        ))}
-                      </Pie>
-                      <Tooltip 
-                        contentStyle={{
-                          backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                          border: '1px solid #e5e7eb',
-                          borderRadius: '8px',
-                          padding: '8px 12px'
-                        }}
-                      />
-                      <Legend 
-                        verticalAlign="bottom" 
-                        height={36}
-                        iconType="circle"
-                      />
-                    </PieChart>
-                  </ResponsiveContainer>
-                )}
+              {/* Chart Section */}
+              <div className="bg-slate-900/80 rounded-2xl border border-slate-800 shadow-xl p-6 backdrop-blur-sm flex flex-col">
+                <h2 className="text-lg font-bold mb-6 text-white flex items-center gap-2">
+                  <div className="w-2 h-6 bg-emerald-500 rounded-full"></div>
+                  Task Status Distribution
+                </h2>
 
-                {/* Task Summary */}
-                <div className="mt-6 space-y-2">
-                  <div className="flex items-center justify-between p-3 bg-blue-200 rounded-lg">
-                    <div className="flex items-center gap-2">
-                      <div className="w-4 h-4 bg-blue-600 rounded-full"></div>
-                      <span className="font-medium text-gray-700">To Do</span>
+                <div className="flex-1 flex flex-col items-center justify-center min-h-[300px]">
+                  {totalTasks === 0 ? (
+                    <div className="text-slate-500 text-center">
+                      <p>No data to analyze</p>
                     </div>
-                    <span className="font-bold text-blue-600">{todoTasks}</span>
-                  </div>
-                  
-                  <div className="flex items-center justify-between p-3 bg-yellow-100 rounded-lg">
-                    <div className="flex items-center gap-2">
-                      <div className="w-4 h-4 bg-yellow-600 rounded-full"></div>
-                      <span className="font-medium text-gray-700">In Progress</span>
-                    </div>
-                    <span className="font-bold text-yellow-600">{inProgressTasks}</span>
-                  </div>
-                  
-                  <div className="flex items-center justify-between p-3 bg-green-200 rounded-lg">
-                    <div className="flex items-center gap-2">
-                      <div className="w-4 h-4 bg-green-600 rounded-full"></div>
-                      <span className="font-medium text-gray-700">Done</span>
-                    </div>
-                    <span className="font-bold text-green-600">{completedTasks}</span>
-                  </div>
+                  ) : (
+                    <ResponsiveContainer width="100%" height={300}>
+                      <PieChart>
+                        <Pie
+                          data={chartData}
+                          cx="50%"
+                          cy="50%"
+                          innerRadius={60}
+                          outerRadius={100}
+                          paddingAngle={5}
+                          dataKey="value"
+                        >
+                          {chartData.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={entry.color} stroke="rgba(0,0,0,0.2)" strokeWidth={2} />
+                          ))}
+                        </Pie>
+                        <Tooltip
+                          contentStyle={{
+                            backgroundColor: '#0f172a',
+                            border: '1px solid #1e293b',
+                            borderRadius: '12px',
+                            color: '#f8fafc',
+                            padding: '12px'
+                          }}
+                          itemStyle={{ color: '#f8fafc' }}
+                        />
+                        <Legend
+                          verticalAlign="bottom"
+                          height={36}
+                          iconType="circle"
+                          formatter={(value) => <span className="text-slate-300 ml-1">{value}</span>}
+                        />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  )}
+                </div>
+
+                {/* Custom Legend/Summary */}
+                <div className="mt-6 grid grid-cols-3 gap-3">
+                  <SummaryItem label="To Do" value={todoTasks} color="bg-blue-500" />
+                  <SummaryItem label="In Progress" value={inProgressTasks} color="bg-yellow-500" />
+                  <SummaryItem label="Done" value={completedTasks} color="bg-emerald-500" />
                 </div>
               </div>
             </div>
@@ -254,5 +260,38 @@ const Memberdashboard = () => {
     </PageTransition>
   );
 };
+
+const StatsCard = ({ title, value, icon, bg, border, textColor }) => (
+  <div className={`p-6 rounded-2xl border ${border} ${bg} backdrop-blur-sm flex items-center gap-4 transition-transform hover:scale-[1.02]`}>
+    <div className={`w-12 h-12 rounded-xl bg-slate-950/30 flex items-center justify-center shadow-inner`}>
+      {icon}
+    </div>
+    <div>
+      <p className="text-slate-400 text-sm font-medium">{title}</p>
+      <p className={`text-3xl font-bold ${textColor}`}>{value}</p>
+    </div>
+  </div>
+);
+
+const StatusBadge = ({ status }) => {
+  let classes = "bg-slate-800 text-slate-400 border-slate-700";
+  if (status === "DONE") classes = "bg-emerald-500/10 text-emerald-400 border-emerald-500/20";
+  else if (status === "IN PROGRESS") classes = "bg-yellow-500/10 text-yellow-400 border-yellow-500/20";
+  else if (status === "TO DO") classes = "bg-blue-500/10 text-blue-400 border-blue-500/20";
+
+  return (
+    <span className={`text-[10px] uppercase font-bold px-2 py-1 rounded-md border ${classes}`}>
+      {status}
+    </span>
+  );
+};
+
+const SummaryItem = ({ label, value, color }) => (
+  <div className="bg-slate-950/50 rounded-lg p-3 text-center border border-slate-800">
+    <div className={`w-2 h-2 ${color} rounded-full mx-auto mb-2`}></div>
+    <p className="text-xs text-slate-400 mb-1">{label}</p>
+    <p className="text-lg font-bold text-white">{value}</p>
+  </div>
+);
 
 export default Memberdashboard;

@@ -7,7 +7,7 @@ import {
   useLocation
 } from "react-router-dom";
 import Admindashboard from "./pages/Admindashboard";
-import Adminprojects from "./pages/Adminprojects";
+// import Adminprojects from "./pages/Adminprojects";
 import Admintasks from "./pages/Admintasks";
 import Login from "./pages/Login";
 import Memberdashboard from "./pages/Memberdashboard";
@@ -23,6 +23,7 @@ import LogoutButton from "./pages/Logout";
 import Dashboard from "./pages/Dashboard";
 import Chat from "./pages/Chat";
 import Whiteboard from "./pages/Whiteboard";
+import Leaderboard from "./pages/Leaderboard";
 import { authService} from "./services/authService";
 
 
@@ -91,13 +92,14 @@ function App() {
           {/* Protected routes */}
           <Route path="/team" element={<RequireAuth><Team /></RequireAuth>} />
           <Route path="/admin-dashboard" element={<RequireAuth><Admindashboard /></RequireAuth>} />
-          <Route path="/admin-projects" element={<RequireAuth><Adminprojects /></RequireAuth>} />
+          {/* <Route path="/admin-projects" element={<RequireAuth><Adminprojects /></RequireAuth>} /> */}
           <Route path="/admin-tasks" element={<RequireAuth><Admintasks /></RequireAuth>} />
           <Route path="/member-tasks" element={<RequireAuth><Taskdetails /></RequireAuth>} />
           <Route path="/member-dashboard" element={<RequireAuth><Memberdashboard /></RequireAuth>} />
           <Route path="/dashboard" element={<RequireAuth><Dashboard /></RequireAuth>} />
           <Route path="/chat" element={<RequireAuth><Chat/></RequireAuth>} />
           <Route path="/whiteboard" element={<RequireAuth><Whiteboard/></RequireAuth>} />
+          <Route path="/leaderboard" element={<RequireAuth><Leaderboard/></RequireAuth>} />
           <Route path="/logout" element={<LogoutButton />} />
           {/* Fallback */}
           <Route path="*" element={<Notfound />} />
