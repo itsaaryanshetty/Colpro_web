@@ -28,7 +28,7 @@ services:
     image: postgres:15-alpine
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: Chinnu@290105    # your actual password (without %40)
+      POSTGRES_PASSWORD: password123
       POSTGRES_DB: colpro_practice 
     ports:
       - "5432:5432"
