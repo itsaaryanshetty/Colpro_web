@@ -65,10 +65,8 @@ services:
 
   db:
     image: postgres:15-alpine
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: Chinnu@290105
-      POSTGRES_DB: colpro_practice
+    env_file:
+      - ./backend_fastapi/.env
     ports:
       - "5432:5432"
     volumes:
