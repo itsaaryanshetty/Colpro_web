@@ -19,13 +19,13 @@ pipeline {
 
         stage('Build Frontend') {
             steps {
-                bat 'docker build -t colpro-frontend ./frontend'
+                bat 'docker build --no-cache -t colpro-frontend ./frontend'
             }
         }
 
         stage('Build Backend') {
             steps {
-                bat 'docker build -t colpro-backend ./backend_fastapi'
+                bat 'docker build --no-cache -t colpro-backend ./backend_fastapi'
             }
         }
 
