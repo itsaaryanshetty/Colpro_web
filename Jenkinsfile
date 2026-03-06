@@ -9,6 +9,14 @@ pipeline {
             }
         }
 
+        stage('Setup ENV') {
+            steps {
+                withCredentials([file(credentialsId: 'colpro-env-file', variable: 'ENV_FILE')]) {
+                    bat 'copy "%ENV_FILE%" backend_fastapi\\.env'
+                }
+            }
+        }
+
         stage('Build Frontend') {
             steps {
                 bat 'docker build -t colpro-frontend ./frontend'
@@ -36,10 +44,10 @@ pipeline {
 
     post {
         success {
-            echo 'Colpro deployed successfully!'
+            echo '✅ Colpro deployed successfully!'
         }
         failure {
-            echo 'Build failed. Check Console Output.'
+            echo '❌ Build failed. Check Console Output.'
         }
     }
 }
