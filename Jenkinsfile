@@ -44,10 +44,10 @@ pipeline {
 
     post {
         success {
-            echo '✅ Colpro deployed successfully!'
+            echo 'Colpro deployed successfully!'
         }
         failure {
-            echo '❌ Build failed. Check Console Output.'
+            echo 'Build failed. Check Console Output.'
         }
     }
 }
