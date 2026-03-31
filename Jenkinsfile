@@ -36,20 +36,18 @@ pipeline {
 
         stage('Save Docker Images') {
             steps {
-                bat 'docker save colpro-frontend | gzip > colpro-frontend.tar.gz'
-                bat 'docker save colpro-backend | gzip > colpro-backend.tar.gz'
+                bat 'docker save -o colpro-frontend.tar colpro-frontend'
+                bat 'docker save -o colpro-backend.tar colpro-backend'
             }
         }
 
         stage('Transfer to EC2') {
             steps {
                 withCredentials([sshUserPrivateKey(credentialsId: 'ec2-ssh-key', keyFileVariable: 'SSH_KEY')]) {
-                    bat '''
-                        scp -i "%SSH_KEY%" -o StrictHostKeyChecking=no colpro-frontend.tar.gz %EC2_USER%@%EC2_IP%:~/
-                        scp -i "%SSH_KEY%" -o StrictHostKeyChecking=no colpro-backend.tar.gz %EC2_USER%@%EC2_IP%:~/
-                        scp -i "%SSH_KEY%" -o StrictHostKeyChecking=no docker-compose.yml %EC2_USER%@%EC2_IP%:~/
-                        scp -i "%SSH_KEY%" -o StrictHostKeyChecking=no backend_fastapi/.env %EC2_USER%@%EC2_IP%:~/
-                    '''
+                    bat 'scp -i "%SSH_KEY%" -o StrictHostKeyChecking=no colpro-frontend.tar %EC2_USER%@%EC2_IP%:~/'
+                    bat 'scp -i "%SSH_KEY%" -o StrictHostKeyChecking=no colpro-backend.tar %EC2_USER%@%EC2_IP%:~/'
+                    bat 'scp -i "%SSH_KEY%" -o StrictHostKeyChecking=no docker-compose.yml %EC2_USER%@%EC2_IP%:~/'
+                    bat 'scp -i "%SSH_KEY%" -o StrictHostKeyChecking=no backend_fastapi\\.env %EC2_USER%@%EC2_IP%:~/'
                 }
             }
         }
@@ -57,14 +55,7 @@ pipeline {
         stage('Deploy on EC2') {
             steps {
                 withCredentials([sshUserPrivateKey(credentialsId: 'ec2-ssh-key', keyFileVariable: 'SSH_KEY')]) {
-                    bat '''
-                        ssh -i "%SSH_KEY%" -o StrictHostKeyChecking=no %EC2_USER%@%EC2_IP% "
-                            docker load < colpro-frontend.tar.gz &&
-                            docker load < colpro-backend.tar.gz &&
-                            docker-compose down &&
-                            docker-compose up -d
-                        "
-                    '''
+                    bat 'ssh -i "%SSH_KEY%" -o StrictHostKeyChecking=no %EC2_USER%@%EC2_IP% "docker load -i colpro-frontend.tar && docker load -i colpro-backend.tar && docker-compose down && docker-compose up -d"'
                 }
             }
         }
