@@ -7,7 +7,7 @@ import PageTransition from "../components/PageTransition";
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
 import { LayoutDashboard, CheckCircle2, Clock, ListTodo, ArrowRight } from "lucide-react";
 
-const API_BASE_URL = "http://localhost:8000";
+const API_BASE_URL = "http://65.2.107.195:8000";
 
 const Memberdashboard = () => {
   const navigate = useNavigate();

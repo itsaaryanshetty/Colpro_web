@@ -4,7 +4,7 @@ import { authService } from "../services/authService";
 import axios from "axios";
 import { Trophy, Medal, Award } from 'lucide-react';
 
-const API_BASE_URL = "http://localhost:8000";
+const API_BASE_URL = "http://65.2.107.195:8000";
 
 const Leaderboard = () => {
   const [leaderboardData, setLeaderboardData] = useState([]);

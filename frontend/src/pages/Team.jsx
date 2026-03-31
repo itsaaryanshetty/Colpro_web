@@ -6,7 +6,7 @@ import axios from "axios";
 import PageTransition from "../components/PageTransition";
 import { Users, Briefcase, Mail, ShieldCheck } from "lucide-react";
 
-const API_BASE_URL = "http://localhost:8000";
+const API_BASE_URL = "http://65.2.107.195:8000";
 
 const Team = () => {
   const navigate = useNavigate();

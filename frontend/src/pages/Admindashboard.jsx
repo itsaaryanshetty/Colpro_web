@@ -6,7 +6,7 @@ import { authService } from "../services/authService";
 import PageTransition from "../components/PageTransition";
 import { FolderPlus, Trash2, CheckSquare, Layers, Plus, ChevronDown, ChevronUp, User } from "lucide-react";
 
-const API_BASE_URL = "http://localhost:8000";
+const API_BASE_URL = "http://65.2.107.195:8000";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
