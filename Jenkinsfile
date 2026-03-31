@@ -47,7 +47,8 @@ pipeline {
                     bat 'scp -i "%SSH_KEY%" -o StrictHostKeyChecking=no colpro-frontend.tar %EC2_USER%@%EC2_IP%:~/'
                     bat 'scp -i "%SSH_KEY%" -o StrictHostKeyChecking=no colpro-backend.tar %EC2_USER%@%EC2_IP%:~/'
                     bat 'scp -i "%SSH_KEY%" -o StrictHostKeyChecking=no docker-compose.yml %EC2_USER%@%EC2_IP%:~/'
-                    bat 'scp -i "%SSH_KEY%" -o StrictHostKeyChecking=no backend_fastapi\\.env %EC2_USER%@%EC2_IP%:~/'
+                    bat 'ssh -i "%SSH_KEY%" -o StrictHostKeyChecking=no %EC2_USER%@%EC2_IP% "mkdir -p ~/backend_fastapi"'
+                    bat 'scp -i "%SSH_KEY%" -o StrictHostKeyChecking=no backend_fastapi\\.env %EC2_USER%@%EC2_IP%:~/backend_fastapi/.env'
                 }
             }
         }
