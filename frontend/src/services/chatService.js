@@ -2,8 +2,8 @@
 
 import { authService } from './authService';
 
-const API_BASE_URL = 'http://localhost:8000';
-const WS_BASE_URL = 'ws://localhost:8000';
+const API_BASE_URL = 'http://65.2.107.195:8000';
+const WS_BASE_URL = 'ws://65.2.107.195:8000';
 
 class ChatService {
   constructor() {

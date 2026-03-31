@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:8000';
+const API_BASE_URL = 'http://65.2.107.195:8000';
 
 export const authService = {
     signup: async (signUpDetails) => {
